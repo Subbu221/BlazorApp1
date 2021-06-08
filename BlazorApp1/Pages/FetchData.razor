@@ -1,0 +1,62 @@
+﻿@page "/FetchData"
+@inject HttpClient Http
+
+<h1>Student Admissions</h1>
+
+
+@if (studentAdmissions == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Gender</th>
+                <th>Mobile</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in studentAdmissions)
+            {
+                <tr>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Gender </td>
+                    <td>@item.Mobile</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+
+    private List<StudentAdmission> studentAdmissions=new List<StudentAdmission>() ;
+    protected override async Task OnInitializedAsync()
+    {
+        Http.BaseAddress = new Uri("Access-Control-Allow-Origin: https://schoolwebapi.azurewebsites.net");
+        studentAdmissions = await Http.GetFromJsonAsync<List<StudentAdmission>>("/api/StudentAdmissions/1");
+        //studentAdmissions = await Http.GetFromJsonAsync<List<StudentAdmission>>("Access-Control-Allow-Origin: https://schoolwebapi.azurewebsites.net/api/StudentAdmissions");
+    }
+
+
+    public class StudentAdmission
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Gender { get; set; }
+        public System.DateTime DateOfBirth { get; set; }
+        public string Email { get; set; }
+        public string FatherName { get; set; }
+        public string Mobile { get; set; }
+        public string Standard { get; set; }
+        public string PreviousOrganization { get; set; }
+        public string CommunicationAddress { get; set; }
+        public string PermanentAddress { get; set; }
+        public double AdmissionFee { get; set; }
+    }
+}
