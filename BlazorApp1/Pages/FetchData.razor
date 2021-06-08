@@ -1,6 +1,9 @@
-﻿@page "/FetchData"
+﻿@page "/fetchdata"
 @inject HttpClient Http
-
+@using System.Net.Http
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Cors
+@using System.Web
 <h1>Student Admissions</h1>
 
 
@@ -34,12 +37,13 @@ else
 }
 @code {
 
-    private List<StudentAdmission> studentAdmissions=new List<StudentAdmission>() ;
+    private List<StudentAdmission> studentAdmissions = new List<StudentAdmission>();
     protected override async Task OnInitializedAsync()
     {
-        Http.BaseAddress = new Uri("Access-Control-Allow-Origin: https://schoolwebapi.azurewebsites.net");
-        studentAdmissions = await Http.GetFromJsonAsync<List<StudentAdmission>>("/api/StudentAdmissions/1");
-        //studentAdmissions = await Http.GetFromJsonAsync<List<StudentAdmission>>("Access-Control-Allow-Origin: https://schoolwebapi.azurewebsites.net/api/StudentAdmissions");
+
+       
+        studentAdmissions = await Http.GetFromJsonAsync<List<StudentAdmission>>("StudentAdmissions");
+  
     }
 
 
