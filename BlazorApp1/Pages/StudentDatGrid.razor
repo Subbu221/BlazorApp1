@@ -1,0 +1,66 @@
+﻿@page "/StudentDatGrid"
+<h3>StudentDatGrid</h3>
+
+@inject HttpClient Http
+@using System.Net.Http
+<head>
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default.css">
+
+</head>
+
+<h1>DataGrid</h1>
+
+
+<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Advanced" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@studentAdmissions" TItem="StudentAdmission" ColumnWidth="auto" LogicalFilterOperator="LogicalFilterOperator.Or">
+    <Columns>
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="Id"  Filterable="false" Title="ID" Frozen="true" Width="50px" TextAlign="TextAlign.Center" />
+
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="FirstName" Title="First Name" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="LastName" Title="Last Name" Width="150px" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="Gender" Title="Gender" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="Email" Title="Email" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="FatherName" Title="Father Name" Width="150px" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="Gender" Title="Gender" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="Mobile" Title="Mobile" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="LastName" Title="PreviousOrganization" Width="150px" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="DateOfBirth" Title="Gender" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="AdmissionFee" Title="Gender" />
+
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    string text = "Do not Click me";
+    int Count = 2;
+
+    private List<StudentAdmission> studentAdmission = new List<StudentAdmission>();
+    IEnumerable<StudentAdmission> studentAdmissions;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+
+        studentAdmission = await Http.GetFromJsonAsync<List<StudentAdmission>>("StudentAdmissions");
+        studentAdmissions = studentAdmission as IEnumerable<StudentAdmission>;
+    }
+
+
+    public class StudentAdmission
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Gender { get; set; }
+        public System.DateTime DateOfBirth { get; set; }
+        public string Email { get; set; }
+        public string FatherName { get; set; }
+        public string Mobile { get; set; }
+        public string Standard { get; set; }
+        public string PreviousOrganization { get; set; }
+        public string CommunicationAddress { get; set; }
+        public string PermanentAddress { get; set; }
+        public double AdmissionFee { get; set; }
+    }
+}
+
