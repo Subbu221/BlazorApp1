@@ -1,0 +1,152 @@
+﻿@page "/DataGridCURD"
+
+@inject HttpClient Http
+@using System.Net.Http
+
+<head>
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default.css">
+
+</head>
+<h1>DataGrid InLine Editing</h1>
+
+<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add" Click="@InsertRow" />
+<RadzenDataGrid @ref="StudentGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                Data="@Student" TItem="StudentAdmission" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+    <Columns>
+        <RadzenDataGridColumn Width="100px" TItem="StudentAdmission" Property="Id" Title="ID" />
+
+
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="FirstName" Title="First Name">
+            <EditTemplate Context="order">
+                <RadzenTextBox @bind-Value="order.FirstName" Style="width:100%; display: block" Name="FirstName" />
+                <RadzenRequiredValidator Text="LastName is required" Component="LastName" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="LastName" Title="Last Name">
+            <EditTemplate Context="order">
+                <RadzenTextBox @bind-Value="order.LastName" Style="width:100%; display: block" Name="LastName" />
+                <RadzenRequiredValidator Text="LastName is required" Component="LastName" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="StudentAdmission" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="100px">
+            <Template Context="order">
+                <RadzenButton Icon="edit" Size="ButtonSize.Small" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton Icon="save" Size="ButtonSize.Small" Click="@((args) => SaveRow(order))">
+                </RadzenButton>
+                <RadzenButton Icon="cancel" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Secondary" Click="@((args) => CancelEdit(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="StudentAdmission" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+            <Template Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => DeleteRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => DeleteRow(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+
+
+
+    RadzenDataGrid<StudentAdmission> StudentGrid;
+    private List<StudentAdmission> studentAdmission = new List<StudentAdmission>();
+    IEnumerable<StudentAdmission> studentAdmissions;
+    IList<StudentAdmission> Student;
+    IList<StudentAdmission> Students;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    IList<StudentAdmission> ToIList<StudentAdmission>(List<StudentAdmission> studentAdmission)
+    {
+        return studentAdmission;
+    }
+    void EditRow(StudentAdmission order)
+    {
+        StudentGrid.EditRow(order);
+    }
+
+    void OnUpdateRow(StudentAdmission order)
+    {
+
+
+        // For production
+        //dbContext.SaveChanges();
+    }
+    // void SaveRow(StudentAdmission order)
+    // {
+    //int x = CreateRecord(order);
+    //}
+
+    protected  async Task SaveRow(StudentAdmission order)
+    {
+        if (order.Id == 0)
+        {
+            var response = await Http.PostAsJsonAsync("StudentAdmissions", order);
+            await LoadData();
+        }
+        else
+        {
+            var response = await Http.PutAsJsonAsync("StudentAdmissions/"+ order.Id,order);
+            await LoadData();
+        }
+
+    }
+
+    void CancelEdit(StudentAdmission order)
+    {
+        StudentGrid.CancelEditRow(order);
+    }
+
+    protected async Task DeleteRow(StudentAdmission order)
+    {
+        var response = await Http.DeleteAsync("StudentAdmissions/" + order.Id);
+        await LoadData();
+    }
+
+    void InsertRow()
+    {
+        StudentGrid.InsertRow(new StudentAdmission());
+    }
+
+    void OnCreateRow(StudentAdmission order)
+    {
+
+
+    }
+    protected async Task LoadData()
+    {
+        studentAdmission = await Http.GetFromJsonAsync<List<StudentAdmission>>("StudentAdmissions");
+        studentAdmissions = studentAdmission as IEnumerable<StudentAdmission>;
+        Student = ToIList<StudentAdmission>(studentAdmission);
+    }
+    public class StudentAdmission
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Gender { get; set; }
+        public System.DateTime DateOfBirth { get; set; }
+        public string Email { get; set; }
+        public string FatherName { get; set; }
+        public string Mobile { get; set; }
+        public string Standard { get; set; }
+        public string PreviousOrganization { get; set; }
+        public string CommunicationAddress { get; set; }
+        public string PermanentAddress { get; set; }
+        public double AdmissionFee { get; set; }
+    }
+}

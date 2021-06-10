@@ -11,8 +11,7 @@
 
 <h1>DataGrid</h1>
 
-
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" FilterMode="FilterMode.Advanced" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@studentAdmissions" TItem="StudentAdmission" ColumnWidth="auto" LogicalFilterOperator="LogicalFilterOperator.Or">
+<RadzenDataGrid AllowFiltering="true"  AllowColumnResize="true" FilterMode="FilterMode.Advanced" PageSize="5" AllowPaging="true" AllowSorting="true" Data="@studentAdmissions" TItem="StudentAdmission" ColumnWidth="auto" LogicalFilterOperator="LogicalFilterOperator.Or">
     <Columns>
         <RadzenDataGridColumn TItem="StudentAdmission" Property="Id"  Filterable="false" Title="ID" Frozen="true" Width="50px" TextAlign="TextAlign.Center" />
 
@@ -21,26 +20,23 @@
         <RadzenDataGridColumn TItem="StudentAdmission" Property="Gender" Title="Gender" />
         <RadzenDataGridColumn TItem="StudentAdmission" Property="Email" Title="Email" />
         <RadzenDataGridColumn TItem="StudentAdmission" Property="FatherName" Title="Father Name" Width="150px" />
-        <RadzenDataGridColumn TItem="StudentAdmission" Property="Gender" Title="Gender" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="Standard" Title="Standard" />
         <RadzenDataGridColumn TItem="StudentAdmission" Property="Mobile" Title="Mobile" />
         <RadzenDataGridColumn TItem="StudentAdmission" Property="LastName" Title="PreviousOrganization" Width="150px" />
-        <RadzenDataGridColumn TItem="StudentAdmission" Property="DateOfBirth" Title="Gender" FormatString="{0:d}"/>
-        <RadzenDataGridColumn TItem="StudentAdmission" Property="AdmissionFee" Title="Gender" />
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="DateOfBirth" Title="DateOfBirth" FormatString="{0:d}"/>
+        <RadzenDataGridColumn TItem="StudentAdmission" Property="AdmissionFee" Title="AdmissionFee" />
 
     </Columns>
 </RadzenDataGrid>
 
 @code {
-    string text = "Do not Click me";
-    int Count = 2;
+
 
     private List<StudentAdmission> studentAdmission = new List<StudentAdmission>();
     IEnumerable<StudentAdmission> studentAdmissions;
 
     protected override async Task OnInitializedAsync()
     {
-
-
         studentAdmission = await Http.GetFromJsonAsync<List<StudentAdmission>>("StudentAdmissions");
         studentAdmissions = studentAdmission as IEnumerable<StudentAdmission>;
     }
